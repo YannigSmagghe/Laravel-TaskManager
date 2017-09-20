@@ -7,7 +7,6 @@ Route::group(['middleware' => ['web', 'guest']], function () {
     Route::post('/user', 'UserController@store');
 
 });
-
 Route::group(['middleware' => ['web', 'auth', 'auth.active']], function () {
 
     Route::get('/', 'HomeController@index');
