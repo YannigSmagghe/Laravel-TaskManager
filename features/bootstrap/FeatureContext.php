@@ -25,12 +25,19 @@ class FeatureContext extends MinkContext implements Context
      */
     private $htppClient;
 
+    private $countUserBase;
+
     /**
      * FeatureContext constructor.
      */
     public function __construct()
     {
         $this->htppClient = new Client();
+    }
+
+    public function before(BeforeScenarioScope $scenarioScope)
+    {
+        $this->countUserBase = count(User::all());
     }
 
     public function after(AfterScenarioScope $scope){
@@ -71,11 +78,15 @@ class FeatureContext extends MinkContext implements Context
     public function iCreateABook()
     {
 
-        $book = new Task(['id' => 2, 'user_id' => 2, 'title' => 'Mon Titre', 'description' => 'C\'est ma description à moi', 'status' => 1]);
+        $user = new User(['name' => 'admin1', 'username' => 'admin1', 'email' => 'admin1@gmail.com', 'role_id' => 1, 'password' => 'admin1']);
+        $user->save();
+        $book = new Task(['user_id' =>$user['id'], 'title' => 'Mon Titre', 'description' => 'C\'est ma description à moi', 'status' => 1]);
         $book->save();
         if ($book){
+            $user->delete();
             return ('book created');
         }else{
+            $user->delete();
             return ('no book');
         }
 
@@ -87,14 +98,82 @@ class FeatureContext extends MinkContext implements Context
      */
     public function iShouldHaveOneBook()
     {
-        $request = $this->htppClient->get('127.0.0.1:8000/tasks');
-//        dd($request);
-//        dd($request->getBody()->getContents());
-//        if (count()) {
-//            echo('A successfully created status code must be returned');
-//        } else {
-//            echo($request->getStatusCode());
-//        }
+        $book = Task::all();
+        if ($book === 1 ){
+            return ('book 1');
+        }else{
+            return ('no book at all');
+        }
     }
+
+    /**
+     * @When I delete an user
+     */
+    public function iDeleteAnUser()
+    {
+        $user = new User(['name' => 'admin1', 'username' => 'admin1', 'email' => 'admin1@gmail.com', 'role_id' => 1, 'password' => 'admin1']);
+        $user->save();
+        $userId = $user['id'];
+        $user->delete();
+        if (User::find($userId) === null){
+            return ('User is delete');
+        }else{
+            return ('User survive');
+        }
+    }
+
+    /**
+     * @Then User is delete
+     */
+    public function userIsDelete()
+    {
+        $user = User::all();
+        if (count($user) > $this->countUserBase ){
+            return ('user survive');
+        }else{
+            return ('We deleted this guys');
+        }
+    }
+
+    /**
+     * @When I update an user
+     */
+    public function iUpdateAnUser()
+    {
+        $user = new User(['name' => 'admin1', 'username' => 'admin1', 'email' => 'admin1@gmail.com', 'role_id' => 1, 'password' => 'admin1']);
+        $user->save();
+        $userId = $user['id'];
+        $userFind = User::find($userId);
+        $userFind['name']='adminUpdate';
+        $userFind->save();
+        if ($userFind['name'] === 'adminUpdate'){
+            $user->delete();
+            return ('User is update');
+        }else{
+            $user->delete();
+            return ('User not change');
+        }
+    }
+
+    /**
+     * @Then User is update
+     */
+    public function userIsUpdate()
+    {
+        $user = new User(['name' => 'admin1', 'username' => 'admin1', 'email' => 'admin1@gmail.com', 'role_id' => 1, 'password' => 'admin1']);
+        $user->save();
+        $userId = $user['id'];
+        $userFind = User::find($userId);
+        $userFind['name']='adminUpdate';
+        $userFind->save();
+        if ($userFind['name'] === 'adminUpdate'){
+            $user->delete();
+            return ('User is update');
+        }else{
+            $user->delete();
+            return ('User not change');
+        }
+    }
+
 
 }

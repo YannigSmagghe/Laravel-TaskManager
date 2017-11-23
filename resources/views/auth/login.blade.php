@@ -12,7 +12,7 @@
 				{{ csrf_field() }}
 				<div class="container-fluid">					
 					<div class="row">
-						< class="col-sm-12">
+						<div class="col-sm-12">
 							<input type="text" name="username" placeholder="username" />
 						</div>
 					</div>
