@@ -87,7 +87,7 @@ class FeatureContext extends MinkContext implements Context
             return ('book created');
         }else{
             $user->delete();
-            return ('no book');
+            return throwException('No book');
         }
 
 
@@ -102,7 +102,7 @@ class FeatureContext extends MinkContext implements Context
         if ($book === 1 ){
             return ('book 1');
         }else{
-            return ('no book at all');
+            return throwException('no book at all');
         }
     }
 
@@ -118,7 +118,7 @@ class FeatureContext extends MinkContext implements Context
         if (User::find($userId) === null){
             return ('User is delete');
         }else{
-            return ('User survive');
+            return throwException('User survive');
         }
     }
 
@@ -131,7 +131,7 @@ class FeatureContext extends MinkContext implements Context
         if (count($user) > $this->countUserBase ){
             return ('user survive');
         }else{
-            return ('We deleted this guys');
+            return throwException('We deleted this guys');
         }
     }
 
@@ -151,7 +151,7 @@ class FeatureContext extends MinkContext implements Context
             return ('User is update');
         }else{
             $user->delete();
-            return ('User not change');
+            return throwException('User not change');
         }
     }
 
@@ -171,7 +171,7 @@ class FeatureContext extends MinkContext implements Context
             return ('User is update');
         }else{
             $user->delete();
-            return ('User not change');
+            return throwException('User not change');
         }
     }
 
