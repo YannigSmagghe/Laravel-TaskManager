@@ -14,6 +14,7 @@ Route::group(['middleware' => ['web', 'auth', 'auth.active']], function () {
     Route::get('/tasks', 'TaskController@index');
     Route::get('/task/{id}/{status}', 'TaskController@updateStatus');
     Route::post('/task', 'TaskController@store');
+//    Route::post('/task', 'testController@store');
     Route::get('/subtasks/{id}', 'SubTaskController@index');
     Route::get('/subtask/{id}/{status}', 'SubTaskController@updateStatus');
     Route::post('/subtask', 'SubTaskController@store');

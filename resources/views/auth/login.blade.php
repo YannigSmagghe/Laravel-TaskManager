@@ -13,7 +13,7 @@
 				<div class="container-fluid">					
 					<div class="row">
 						<div class="col-sm-12">
-							<input type="text" name="username" placeholder="Username" />	
+							<input type="text" name="username" placeholder="username" />
 						</div>
 					</div>
 					<div class="row">
