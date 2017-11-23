@@ -5,3 +5,5 @@ default:
     Behat\MinkExtension:
         default_session: laravel
         laravel: ~
+        gherkin:
+            cache:  ~
