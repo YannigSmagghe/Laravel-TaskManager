@@ -41,16 +41,20 @@ class LoginController extends Controller
         if ($request->ajax()) {
 
             if($auth) {
-                return response()->json([
+                return response()->json(
+                    [
                     'status'    =>  true,
                     'message'   =>  'Logged in successfully!<br />Redirecting to Home...',
                     'redirect'  =>  $this->redirectTo
-                ], 200);
+                    ], 200
+                );
             } else {
-                return response()->json([
+                return response()->json(
+                    [
                     'status'    =>  false,
                     'message'   =>  'Invalid Username/Password!'
-                ], 401);
+                    ], 401
+                );
             }
 
         } else {
@@ -60,7 +64,8 @@ class LoginController extends Controller
         return redirect(URL::route('login'));
     }
 
-    public function logout(){
+    public function logout()
+    {
 
         $this->guard()->logout();
 
@@ -70,10 +75,12 @@ class LoginController extends Controller
 
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        return Validator::make(
+            $data, [
             'username' => 'required',
             'password' => 'required',
-        ]);
+            ]
+        );
     }
 
     protected function getFailedLoginMessage()

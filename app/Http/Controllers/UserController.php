@@ -14,172 +14,202 @@ class UserController extends Controller
 {
     public function index()
     {
-    	$roles = Role::all();
+        $roles = Role::all();
 
-    	return view('user.setting')
-    		->with([
-    			'roles'	=>	$roles
-    		]);
+        return view('user.setting')
+        ->with(
+            [
+            'roles'    =>    $roles
+            ]
+        );
 
     }
 
     public function getUsers()
     {
 
-    	$users = User::where('is_active', 1)->orderBy('created_at', 'DESC')->paginate(10);
-    	$roles = Role::all();
+        $users = User::where('is_active', 1)->orderBy('created_at', 'DESC')->paginate(10);
+        $roles = Role::all();
 
-    	return view('user.users')
-    		->with([
-    			'users' => $users,
-    			'roles'	=>	$roles
-    		]);
+        return view('user.users')
+        ->with(
+            [
+            'users' => $users,
+            'roles'    =>    $roles
+            ]
+        );
 
     }
 
     public function store(Request $request)
     {
-    	$validation = Validator::make($request->all(), User::$rules);
+        $validation = Validator::make($request->all(), User::$rules);
 
-    	if ($validation->fails()) {
-			return response()->json([
-				'status'	=>	false,
-				'errors' 	=> 	$validation->messages()
-			], 400);
-    	}
+        if ($validation->fails()) {
+            return response()->json(
+                [
+                'status'    =>    false,
+                'errors'     =>     $validation->messages()
+                ], 400
+            );
+        }
 
-    	$user = new User();
+        $user = new User();
 
-    	$user->name = $request->name;
-    	$user->username = $request->username;
-    	$user->email = $request->email;
-    	$user->role_id = $request->role_id;    	
-    	$user->password = Hash::make($request->password);
-    	$user->is_active = 1;
-    	$user->save();
+        $user->name = $request->name;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->role_id = $request->role_id;        
+        $user->password = Hash::make($request->password);
+        $user->is_active = 1;
+        $user->save();
 
-    	return response()->json([
-			'status'	=>	true,
-			'message' 	=> 	'User created successfully!'
-		], 200);
+        return response()->json(
+            [
+            'status'    =>    true,
+            'message'     =>     'User created successfully!'
+            ], 200
+        );
     }
 
 
     public function updateForm($id = false)
     {
 
-    	if(!$id) {
-    		return response()->json([
-				'status'	=>	false,
-				'message'	=>	'Parameter missing!'
-			], 422);
-    	}
+        if(!$id) {
+            return response()->json(
+                [
+                'status'    =>    false,
+                'message'    =>    'Parameter missing!'
+                ], 422
+            );
+        }
 
-    	$user = User::find($id);
+        $user = User::find($id);
 
-    	if(!$user) {
-    		return response()->json([
-				'status'	=>	false,
-				'message'	=>	'User no found!'
-			], 404);
-    	}
+        if(!$user) {
+            return response()->json(
+                [
+                'status'    =>    false,
+                'message'    =>    'User no found!'
+                ], 404
+            );
+        }
 
-    	$roles = Role::all();
+        $roles = Role::all();
 
-    	return response()->json([
-    		'status'	=>	true,
-			'form' 		=> view('forms.update_user_form')->with(['user' => $user, 'roles' => $roles])->render()
-		], 200);
+        return response()->json(
+            [
+            'status'    =>    true,
+            'form'         => view('forms.update_user_form')->with(['user' => $user, 'roles' => $roles])->render()
+            ], 200
+        );
 
-	}
+    }
 
     public function update(Request $request)
     {
 
-    	$validation = Validator::make($request->all(), [
-	        'name' 	=> 'required|min:3|max:255',
-	        'email' => 'required|email',
-	    ]);
+        $validation = Validator::make(
+            $request->all(), [
+            'name'     => 'required|min:3|max:255',
+            'email' => 'required|email',
+            ]
+        );
 
-    	if ($validation->fails()) {
-    		if ($request->ajax()) {
-				return response()->json([
-					'status'	=>	false,
-					'errors' 	=> 	$validation->messages()
-				], 400);
-			} else {
-				return \Redirect::to('setting')
-	                ->with([
-	                    'errors'	=>	$validation->messages()
-	                ], 400);
-			}
-    	}
+        if ($validation->fails()) {
+            if ($request->ajax()) {
+                return response()->json(
+                    [
+                    'status'    =>    false,
+                    'errors'     =>     $validation->messages()
+                    ], 400
+                );
+            } else {
+                return \Redirect::to('setting')
+                    ->with(
+                        [
+                        'errors'    =>    $validation->messages()
+                          ], 400
+                    );
+            }
+        }
 
-    	if($request->id) {
-    		$user = User::find($request->id);
-    	} else {
-    		$user = Auth::user();
-    	}
+        if($request->id) {
+            $user = User::find($request->id);
+        } else {
+            $user = Auth::user();
+        }
 
-    	$user->name = $request->name;
-    	$user->email = $request->email;
+        $user->name = $request->name;
+        $user->email = $request->email;
 
-    	if($request->password) {
-    		$user->password = Hash::make($request->password);
-    	}
+        if($request->password) {
+            $user->password = Hash::make($request->password);
+        }
 
-    	if($request->role_id) {
-    		$user->role_id = $request->role_id;
-    	}
+        if($request->role_id) {
+            $user->role_id = $request->role_id;
+        }
 
-    	$user->save();
+        $user->save();
 
-    	if ($request->ajax()) {
+        if ($request->ajax()) {
 
-			return response()->json([
-				'status'	=>	true,
-				'message'	=>	'User updated successfully!'
-			], 200);
+            return response()->json(
+                [
+                'status'    =>    true,
+                'message'    =>    'User updated successfully!'
+                ], 200
+            );
 
-		} else {
+        } else {
 
-			return \Redirect::to('setting')
-                ->with([
-                    'success'	=>	'Setting updated successfully!'
-                ], 200);
+            return \Redirect::to('setting')
+                ->with(
+                    [
+                    'success'    =>    'Setting updated successfully!'
+                    ], 200
+                );
 
-		}
+        }
 
     }
 
     public function destroy(Request $request)
     {
 
-    	if(!$request->id) {
-    		return response()->json([
-				'status'	=>	false,
-				'message'	=>	'Parameter missing!'
-			], 400);
-    	}
+        if(!$request->id) {
+            return response()->json(
+                [
+                'status'    =>    false,
+                'message'    =>    'Parameter missing!'
+                ], 400
+            );
+        }
 
-    	$user_id = $request->id;
+        $user_id = $request->id;
 
-    	$user = User::find($user_id);
+        $user = User::find($user_id);
 
-    	if(!$user) {
-    		return response()->json([
-				'status'	=>	false,
-				'message'	=>	'User no found!'
-			], 404);
-    	}
+        if(!$user) {
+            return response()->json(
+                [
+                'status'    =>    false,
+                'message'    =>    'User no found!'
+                ], 404
+            );
+        }
 
-    	$user->is_active = 0;
-    	$user->save();
+        $user->is_active = 0;
+        $user->save();
 
-    	return response()->json([
-    		'status'	=>	true,
-			'message' 	=> 'User deleted successfully!'
-		], 200);
+        return response()->json(
+            [
+            'status'    =>    true,
+            'message'     => 'User deleted successfully!'
+            ], 200
+        );
 
     }
 

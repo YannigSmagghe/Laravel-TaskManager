@@ -11,8 +11,8 @@ class IsUserActive
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure                 $next
      * @return mixed
      */
     public function handle($request, Closure $next, $guard = null)
@@ -21,9 +21,11 @@ class IsUserActive
             return $next($request);
         }
 
-        return response()->json([
+        return response()->json(
+            [
             'status'    =>  false,
             'message'   =>  'Unauthorized request!'
-        ], 401);
+            ], 401
+        );
     }
 }

@@ -16,13 +16,14 @@ class Task extends Model
     ];
 
     public static $rules = [
-    	'title'					=>	'required|min:3|max:255',
-    	'description'			=>	'required|min:3|max:255',
+        'title'                    =>    'required|min:3|max:255',
+        'description'            =>    'required|min:3|max:255',
         'status'                =>  'required'
     ];
 
-    public function user() {
-    	return $this->belongsTo(User::class);
+    public function user() 
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function subtasks()
