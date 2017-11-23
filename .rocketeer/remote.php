@@ -42,15 +42,15 @@ return [
     'shell'          => false,
 
     // An array of commands to run under shell
-    'shelled'        => ['which', 'ruby', 'npm', 'bower', 'bundle', 'grunt'],
+    'shelled'        => ['which', 'ruby', 'bower', 'bundle', 'grunt'],
 
     // Enable use of sudo for some commands
     // You can specify a sudo user by doing
     // 'sudo' => 'the_user'
-    'sudo' => false,
+    'sudo' => 'vagrant',
 
     // An array of commands to run under sudo
-    'sudoed' => [],
+    'sudoed' => ['mkdir', 'git clone'],
 
     // Permissions$
     ////////////////////////////////////////////////////////////////////
